@@ -1,3 +1,3 @@
-# php-budget-tracker
+# PHP Budget Tracker CLI
 
-A simple PHP budget tracker application.
+A simple PHP budget tracker CLI
