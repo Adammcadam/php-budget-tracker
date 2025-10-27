@@ -15,7 +15,6 @@ class BudgetTracker
         }
     }
 
-
     public function addTransaction()
     {
         $description = readline('Enter a description: ');
@@ -25,10 +24,22 @@ class BudgetTracker
         // TODO:: break here if type is not income or expense
 
         $transaction = new Transaction($description, $amount, $type);
-        $this->transactions = $transaction->toArray();
+        $this->transactions[] = $transaction->toArray();
         $this->save();
 
         echo "Transaction added successfully!";
+    }
+
+    public function viewTransactions()
+    {
+        if (empty($this->transactions)) {
+            echo "No Transactions yet.\n";
+            return;
+        }
+
+        foreach ($this->transactions as $transaction) {
+            echo "{$transaction['date']} - {$transaction['description']} ({$transaction['type']}) : £{$transaction['amount']}\n";
+        }
     }
 
     protected function save()

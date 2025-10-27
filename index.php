@@ -18,7 +18,8 @@ while (true) {
             $tracker->addTransaction();
             break;
         case 2:
-            // TODO:: view transaction
+            $tracker->viewTransactions();
+            break;
         case 3:
             // TODO:: view summary
         case 4:
