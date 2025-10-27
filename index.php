@@ -4,6 +4,7 @@ require_once 'classes/BudgetTracker.php';
 
 $tracker = new BudgetTracker();
 
+// TODO:: add some colour/styling to the below output
 while (true) {
     echo "\n------ Budget Tracker ------\n";
     echo "1. Add Transaction\n";
@@ -21,7 +22,8 @@ while (true) {
             $tracker->viewTransactions();
             break;
         case 3:
-            // TODO:: view summary
+            $tracker->viewSummary();
+            break;
         case 4:
             exit("bye friend!\n");
         default:

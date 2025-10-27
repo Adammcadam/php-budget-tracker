@@ -21,7 +21,10 @@ class BudgetTracker
         $amount = readline('Enter an amount: ');
         $type = readline('Enter type (income/expense): ');
 
-        // TODO:: break here if type is not income or expense
+        if ($type !== 'income' || $type !== 'expense') {
+            echo 'Type must be of type (income/expense)';
+            return;
+        }
 
         $transaction = new Transaction($description, $amount, $type);
         $this->transactions[] = $transaction->toArray();
@@ -41,6 +44,30 @@ class BudgetTracker
             echo "{$transaction['date']} - {$transaction['description']} ({$transaction['type']}) : £{$transaction['amount']}\n";
         }
     }
+
+    public function viewSummary()
+    {
+        $income = 0;
+        $expenses = 0;
+
+        foreach ($this->transactions as $transaction) {
+            if ($transaction['type'] === 'income') {
+                $income += $transaction['amount'];
+            } else {
+                $expenses += $transaction['amount'];
+            }
+        }
+
+        $total = $income - $expenses;
+
+        echo "------ Summary ------\n";
+        echo "Total Income: £$income\n";
+        echo "Total Expenses: £$expenses\n";
+        echo "Balance: £$total\n";
+    }
+
+    // TODO:: add ability to edit/delete transactions
+    // TODO:: add ability to export to CSV
 
     protected function save()
     {
