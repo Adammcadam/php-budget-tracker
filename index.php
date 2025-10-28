@@ -1,18 +1,23 @@
 <?php
 
+use League\CLImate\CLImate;
+
 require_once 'classes/BudgetTracker.php';
+require_once('vendor/autoload.php');
 
 $tracker = new BudgetTracker();
+$cli = new CLImate();
 
 // TODO:: add some colour/styling to the below output
 while (true) {
-    echo "\n------ Budget Tracker ------\n";
-    echo "1. Add Transaction\n";
-    echo "2. View Transactions\n";
-    echo "3. View Summary\n";
-    echo "4. Exit\n";
+    $cli->underline("Budget Tracker");
+    $cli->bold("1. Add Transaction");
+    $cli->bold("2. View Transactions");
+    $cli->bold("3. View Summary");
+    $cli->bold("4. Exit");
 
-    $choice = readline("Choose an option: ");
+    $input = $cli->input("choose an option: ");
+    $choice = $input->prompt();
 
     switch ($choice) {
         case 1:
@@ -25,8 +30,9 @@ while (true) {
             $tracker->viewSummary();
             break;
         case 4:
-            exit("bye friend!\n");
+            $cli->info("bye friend!");
+            exit();
         default:
-            echo "That's an invalid choice. Try Again\n";
+            $cli->error("That's an invalid choice. Try Again")->br();
     }
 }
