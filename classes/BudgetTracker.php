@@ -1,11 +1,16 @@
 <?php
 
+use League\CLImate\CLImate;
+
 require_once 'classes/Transaction.php';
+require_once('vendor/autoload.php');
 
 class BudgetTracker
 {
-    private $dataFile = 'data/transactions.json';
-    private $transactions = [];
+    private string $dataFile = 'data/transactions.json';
+    private array $transactions = [];
+
+    protected CLImate $cli;
 
     public function __construct()
     {
@@ -13,24 +18,41 @@ class BudgetTracker
             $json = file_get_contents($this->dataFile);
             $this->transactions = json_decode($json, true) ?? [];
         }
+
+        $this->cli = new CLImate();
     }
 
     public function addTransaction()
     {
-        $description = readline('Enter a description: ');
-        $amount = readline('Enter an amount: ');
-        $type = readline('Enter type (income/expense): ');
+        $this->cli->bold()->out('Add a New Transaction');
 
-        if ($type !== 'income' || $type !== 'expense') {
-            echo 'Type must be of type (income/expense)';
-            return;
+        $description = $this->cli->input('Enter a description: ')->prompt();
+
+        // Validate numeric amount
+        while (true) {
+            $amountInput = $this->cli->input('Enter an amount:')->prompt();
+            if (is_numeric($amountInput)) {
+                $amount = (float) $amountInput;
+                break;
+            }
+            $this->cli->error('Please enter a valid numeric amount.');
+        }
+
+        // Validate type (income/expense)
+        while (true) {
+            $typeInput = strtolower($this->cli->input('Enter type (income/expense):')->prompt());
+            if (in_array($typeInput, ['income', 'expense'])) {
+                $type = $typeInput;
+                break;
+            }
+            $this->cli->error("Type must be either 'income' or 'expense'.");
         }
 
         $transaction = new Transaction($description, $amount, $type);
         $this->transactions[] = $transaction->toArray();
         $this->save();
 
-        echo "Transaction added successfully!";
+        $this->cli->green('Transaction added successfully!');
     }
 
     public function viewTransactions()

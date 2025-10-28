@@ -16,8 +16,7 @@ while (true) {
     $cli->bold("3. View Summary");
     $cli->bold("4. Exit");
 
-    $input = $cli->input("choose an option: ");
-    $choice = $input->prompt();
+    $choice = $cli->input("choose an option: ")->prompt();
 
     switch ($choice) {
         case 1:
