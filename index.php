@@ -10,11 +10,11 @@ $cli = new CLImate();
 
 // TODO:: add some colour/styling to the below output
 while (true) {
-    $cli->underline("Budget Tracker");
+    $cli->underline("Budget Tracker")->br();
     $cli->bold("1. Add Transaction");
     $cli->bold("2. View Transactions");
     $cli->bold("3. View Summary");
-    $cli->bold("4. Exit");
+    $cli->bold("4. Exit")->br();
 
     $choice = $cli->input("choose an option: ")->prompt();
 

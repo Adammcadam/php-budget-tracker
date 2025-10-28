@@ -58,13 +58,10 @@ class BudgetTracker
     public function viewTransactions()
     {
         if (empty($this->transactions)) {
-            echo "No Transactions yet.\n";
-            return;
+            $this->cli->comment("No transactions as yet...");
         }
 
-        foreach ($this->transactions as $transaction) {
-            echo "{$transaction['date']} - {$transaction['description']} ({$transaction['type']}) : £{$transaction['amount']}\n";
-        }
+        $this->cli->table($this->transactions);
     }
 
     public function viewSummary()
@@ -82,10 +79,15 @@ class BudgetTracker
 
         $total = $income - $expenses;
 
-        echo "------ Summary ------\n";
-        echo "Total Income: £$income\n";
-        echo "Total Expenses: £$expenses\n";
-        echo "Balance: £$total\n";
+        $this->cli->underline("Summary")->br();
+        $this->cli->table([
+            [
+                "Total Income" => "£{$income}",
+                "Total Expenses" => "£{$expenses}",
+                "Balance" => "£{$total}"
+            ]
+        ]);
+        $this->cli->br();
     }
 
     // TODO:: add ability to edit/delete transactions
