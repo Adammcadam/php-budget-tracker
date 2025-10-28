@@ -1,11 +1,13 @@
 <?php
 
+namespace App\Model;
+
 class Transaction
 {
-    public $description;
-    public $amount;
-    public $type;
-    public $date;
+    public string $description;
+    public int $amount;
+    public string $type;
+    public string $date;
 
     public function __construct($description, $amount, $type)
     {
@@ -15,7 +17,7 @@ class Transaction
         $this->date = date('Y-m-d H:i:s');
     }
 
-    public function toArray()
+    public function toArray(): array
     {
         return [
             'description' => $this->description,

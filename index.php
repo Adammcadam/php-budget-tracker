@@ -1,14 +1,14 @@
 <?php
 
+use App\Console\BudgetTracker;
 use League\CLImate\CLImate;
 
-require_once 'classes/BudgetTracker.php';
+require_once 'App/Console/BudgetTracker.php';
 require_once('vendor/autoload.php');
 
 $tracker = new BudgetTracker();
 $cli = new CLImate();
 
-// TODO:: add some colour/styling to the below output
 while (true) {
     $cli->underline("Budget Tracker")->br();
     $cli->bold("1. Add Transaction");
