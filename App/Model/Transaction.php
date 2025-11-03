@@ -4,6 +4,7 @@ namespace App\Model;
 
 class Transaction
 {
+    public string $id;
     public string $description;
     public int $amount;
     public string $type;
@@ -11,6 +12,7 @@ class Transaction
 
     public function __construct($description, $amount, $type)
     {
+        $this->id = uniqid();
         $this->description = $description;
         $this->amount = $amount;
         $this->type = strtolower($type);
@@ -20,6 +22,7 @@ class Transaction
     public function toArray(): array
     {
         return [
+            'id' => $this->id,
             'description' => $this->description,
             'amount' => $this->amount,
             'type' => $this->type,

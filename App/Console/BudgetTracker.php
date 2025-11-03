@@ -83,6 +83,50 @@ class BudgetTracker extends BaseCommand
         $this->br();
     }
 
+    public function editTransaction()
+    {
+        $this->header("Edit a Transaction");
+
+        if (empty($this->transactions)) {
+            $this->info("No transactions available to edit.");
+            return;
+        }
+
+        $this->table($this->transactions);
+        $id = $this->ask("Enter the transaction ID to edit:");
+
+        $index = array_search($id, array_column($this->transactions, 'id'));
+
+        if ($index === false || !isset($this->transactions[$index])) {
+            $this->error("Transaction not found.");
+            return;
+        }
+
+        $transaction = $this->transactions[$index];
+
+        $this->info("Leave a field blank to keep the current value.");
+
+        $newDescription = $this->ask("Description [{$transaction['description']}]:");
+        $newAmount = $this->ask("Amount [{$transaction['amount']}]:");
+        $newType = $this->ask("Type (income/expense) [{$transaction['type']}]:");
+
+        // Only update values if user entered something
+        if (!empty(trim($newDescription))) {
+            $transaction['description'] = $newDescription;
+        }
+        if (!empty(trim($newAmount)) && is_numeric($newAmount)) {
+            $transaction['amount'] = (float) $newAmount;
+        }
+        if (!empty(trim($newType)) && in_array(strtolower($newType), ['income', 'expense'])) {
+            $transaction['type'] = strtolower($newType);
+        }
+
+        $this->transactions[$index] = $transaction;
+        $this->save();
+
+        $this->success("Transaction updated successfully!");
+    }
+
     // TODO:: add ability to edit/delete transactions
     // TODO:: add ability to export to CSV
 
