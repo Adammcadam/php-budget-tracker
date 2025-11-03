@@ -135,7 +135,51 @@ class BudgetTracker extends BaseCommand
         $this->success("Transaction deleted successfully!");
     }
 
-    // TODO:: add ability to export to CSV
+    public function exportToCsv(): void
+    {
+        $this->header("Export Transactions to CSV");
+
+        if (empty($this->transactions)) {
+            $this->info("No transactions available to export.");
+            return;
+        }
+
+        // Ensure export directory exists
+        $exportDir = 'exports';
+        if (!is_dir($exportDir)) {
+            mkdir($exportDir, 0777, true);
+        }
+
+        $filename = "{$exportDir}/transactions_" . date('Y-m-d_H-i-s') . ".csv";
+
+        $filePath = fopen($filename, 'w');
+        if (!$filePath) {
+            $this->error("Failed to create export file.");
+            return;
+        }
+
+        fprintf($filePath, chr(0xEF).chr(0xBB).chr(0xBF));
+
+        $headers = ['Description', 'Amount (£)', 'Type', 'Transaction ID'];
+        fputcsv($filePath, $headers);
+
+        // Format each row
+        foreach ($this->transactions as $t) {
+            $amount = ($t['type'] === 'expense' ? '-' : '+') . '£' . number_format($t['amount'], 2);
+            $row = [
+                $t['description'],
+                $amount,
+                ucfirst($t['type']),
+                $t['id'],
+            ];
+            fputcsv($filePath, $row);
+        }
+
+        fclose($filePath);
+
+        $this->success("Transactions exported successfully!");
+        $this->info("File saved as: {$filename}");
+    }
 
     private function findTransaction(string $mode = 'Edit'): ?int
     {
@@ -174,7 +218,6 @@ class BudgetTracker extends BaseCommand
         return $index;
     }
 
-
     protected function save()
     {
         file_put_contents($this->dataFile, json_encode($this->transactions, JSON_PRETTY_PRINT));
@@ -183,7 +226,7 @@ class BudgetTracker extends BaseCommand
     /**
      * @return array
      */
-    public function getRows(): array
+    private function getRows(): array
     {
         $rows = [];
         foreach ($this->transactions as $i => $t) {
@@ -195,6 +238,8 @@ class BudgetTracker extends BaseCommand
                 'ID' => $t['id'],
             ];
         }
+        $this->br();
+
         return $rows;
     }
 }

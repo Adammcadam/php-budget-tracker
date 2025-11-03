@@ -20,6 +20,7 @@ It’s simple, extendable, and completely dependency-light — ideal for small f
 * **Add Transactions** — log income and expenses
 * **Edit Transactions** — update income and expenses
 * **Delete Transactions** — delete erroneous transaction
+* **Export Transactions** - export transaction data to a human friendly csv
 * **Persistent Data** — stored locally as JSON
 * **Colourised Output** — powered by CLImate
 * **Modular Architecture** — easily extendable with new commands
@@ -65,6 +66,20 @@ Transaction added successfully!
 ```
 
 Transactions are automatically saved to a local JSON file (`transactions.json`).
+
+---
+
+## Todo / Updates
+
+* Ability to export transaction data by date range or export last X transactions
+* Offer to open file automatically after export
+* UX improvements
+* Add a Main Menu Loop
+* Add Sorting or Filtering When Viewing Transactions
+* Add Date Support for Transactions
+* Make the Summary More Informative
+* Auto-Backup JSON Data or move to Database
+* Add Unit Tests for Logic
 
 ---
 

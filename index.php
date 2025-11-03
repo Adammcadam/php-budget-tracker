@@ -10,14 +10,14 @@ $tracker = new BudgetTracker();
 $cli = new CLImate();
 
 while (true) {
-    // TODO:: maybe only show edit when transactions exist. Make the list dynamic
     $cli->underline("Budget Tracker")->br();
     $cli->bold("1. Add Transaction");
     $cli->bold("2. Edit Transaction");
     $cli->bold("3. Delete Transaction");
     $cli->bold("4. View Transactions");
     $cli->bold("5. View Summary");
-    $cli->bold("6. Exit")->br();
+    $cli->bold("6. Export Transactions to CSV");
+    $cli->bold("7. Exit")->br();
 
     $choice = $cli->input("choose an option: ")->prompt();
 
@@ -38,6 +38,9 @@ while (true) {
             $tracker->viewSummary();
             break;
         case 6:
+            $tracker->exportToCsv();
+            break;
+        case 7:
             $cli->info("bye friend!");
             exit();
         default:
