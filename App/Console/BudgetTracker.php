@@ -85,32 +85,18 @@ class BudgetTracker extends BaseCommand
 
     public function editTransaction()
     {
-        $this->header("Edit a Transaction");
-
-        if (empty($this->transactions)) {
-            $this->info("No transactions available to edit.");
-            return;
-        }
-
-        $this->table($this->transactions);
-        $id = $this->ask("Enter the transaction ID to edit:");
-
-        $index = array_search($id, array_column($this->transactions, 'id'));
-
-        if ($index === false || !isset($this->transactions[$index])) {
-            $this->error("Transaction not found.");
-            return;
+        $index = $this->findTransaction();
+        if ($index === null) {
+            return; // nothing to edit
         }
 
         $transaction = $this->transactions[$index];
-
         $this->info("Leave a field blank to keep the current value.");
 
         $newDescription = $this->ask("Description [{$transaction['description']}]:");
         $newAmount = $this->ask("Amount [{$transaction['amount']}]:");
         $newType = $this->ask("Type (income/expense) [{$transaction['type']}]:");
 
-        // Only update values if user entered something
         if (!empty(trim($newDescription))) {
             $transaction['description'] = $newDescription;
         }
@@ -127,8 +113,49 @@ class BudgetTracker extends BaseCommand
         $this->success("Transaction updated successfully!");
     }
 
-    // TODO:: add ability to edit/delete transactions
+    public function deleteTransaction()
+    {
+        $index = $this->findTransaction('Delete');
+        if ($index === null) {
+            return; // nothing to delete
+        }
+
+        $confirm = strtolower($this->ask("Are you sure you want to delete this transaction? (y/n):"));
+        if ($confirm !== 'y') {
+            $this->info("Deletion cancelled.");
+            return;
+        }
+
+        unset($this->transactions[$index]);
+        $this->transactions = array_values(array_filter($this->transactions)); // clean + reindex
+        $this->save();
+
+        $this->success("Transaction deleted successfully!");
+    }
+
     // TODO:: add ability to export to CSV
+
+    private function findTransaction(string $mode = 'Edit'): ?int
+    {
+        $this->header("{$mode} a Transaction");
+
+        if (empty($this->transactions)) {
+            $this->info("No transactions available to {$mode}.");
+            return null;
+        }
+
+        $this->table($this->transactions);
+        $id = $this->ask("Enter the transaction ID to {$mode}:");
+
+        $index = array_search($id, array_column($this->transactions, 'id'), true);
+
+        if ($index === false || !isset($this->transactions[$index])) {
+            $this->error("Transaction not found.");
+            return null;
+        }
+
+        return $index;
+    }
 
     protected function save()
     {

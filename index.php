@@ -14,9 +14,10 @@ while (true) {
     $cli->underline("Budget Tracker")->br();
     $cli->bold("1. Add Transaction");
     $cli->bold("2. Edit Transaction");
-    $cli->bold("3. View Transactions");
-    $cli->bold("4. View Summary");
-    $cli->bold("5. Exit")->br();
+    $cli->bold("3. Delete Transaction");
+    $cli->bold("4. View Transactions");
+    $cli->bold("5. View Summary");
+    $cli->bold("6. Exit")->br();
 
     $choice = $cli->input("choose an option: ")->prompt();
 
@@ -28,12 +29,15 @@ while (true) {
             $tracker->editTransaction();
             break;
         case 3:
-            $tracker->viewTransactions();
+            $tracker->deleteTransaction();
             break;
         case 4:
-            $tracker->viewSummary();
+            $tracker->viewTransactions();
             break;
         case 5:
+            $tracker->viewSummary();
+            break;
+        case 6:
             $cli->info("bye friend!");
             exit();
         default:

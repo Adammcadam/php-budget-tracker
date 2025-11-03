@@ -60,7 +60,9 @@ abstract class BaseCommand
 
     protected function table(array $data): void
     {
-        $this->cli->table($data);
+        if (! empty($data)) {
+            $this->cli->table($data);
+        }
     }
     protected function br(int $amount = 1): void
     {

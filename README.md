@@ -18,6 +18,8 @@ It’s simple, extendable, and completely dependency-light — ideal for small f
 ## Features
 
 * **Add Transactions** — log income and expenses
+* **Edit Transactions** — update income and expenses
+* **Delete Transactions** — delete erroneous transaction
 * **Persistent Data** — stored locally as JSON
 * **Colourised Output** — powered by CLImate
 * **Modular Architecture** — easily extendable with new commands
