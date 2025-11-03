@@ -54,16 +54,7 @@ class BudgetTracker extends BaseCommand
             $this->info("No transactions as yet...");
         }
 
-        $rows = [];
-        foreach ($this->transactions as $i => $t) {
-            $rows[] = [
-                '#' => $i + 1,
-                'Description' => $t['description'],
-                'Amount (£)' => ($t['type'] === 'expense' ? '-' : '+') . number_format($t['amount'], 2),
-                'Type' => ucfirst($t['type']),
-                'ID' => $t['id'],
-            ];
-        }
+        $rows = $this->getRows();
 
         $this->table($rows);
     }
@@ -156,16 +147,7 @@ class BudgetTracker extends BaseCommand
         }
 
         // Build a table-friendly array of transactions
-        $rows = [];
-        foreach ($this->transactions as $i => $t) {
-            $rows[] = [
-                '#' => $i + 1,
-                'Description' => $t['description'],
-                'Amount (£)' => ($t['type'] === 'expense' ? '-' : '+') . number_format($t['amount'], 2),
-                'Type' => ucfirst($t['type']),
-                'ID' => $t['id'],
-            ];
-        }
+        $rows = $this->getRows();
 
         $this->table($rows);
 
@@ -196,5 +178,23 @@ class BudgetTracker extends BaseCommand
     protected function save()
     {
         file_put_contents($this->dataFile, json_encode($this->transactions, JSON_PRETTY_PRINT));
+    }
+
+    /**
+     * @return array
+     */
+    public function getRows(): array
+    {
+        $rows = [];
+        foreach ($this->transactions as $i => $t) {
+            $rows[] = [
+                '#' => $i + 1,
+                'Description' => $t['description'],
+                'Amount (£)' => ($t['type'] === 'expense' ? '-' : '+') . number_format($t['amount'], 2),
+                'Type' => ucfirst($t['type']),
+                'ID' => $t['id'],
+            ];
+        }
+        return $rows;
     }
 }
