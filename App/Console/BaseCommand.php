@@ -64,6 +64,7 @@ abstract class BaseCommand
             $this->cli->table($data);
         }
     }
+
     protected function br(int $amount = 1): void
     {
         $this->cli->br($amount);

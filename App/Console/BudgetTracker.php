@@ -54,7 +54,18 @@ class BudgetTracker extends BaseCommand
             $this->info("No transactions as yet...");
         }
 
-        $this->table($this->transactions);
+        $rows = [];
+        foreach ($this->transactions as $i => $t) {
+            $rows[] = [
+                '#' => $i + 1,
+                'Description' => $t['description'],
+                'Amount (£)' => ($t['type'] === 'expense' ? '-' : '+') . number_format($t['amount'], 2),
+                'Type' => ucfirst($t['type']),
+                'ID' => $t['id'],
+            ];
+        }
+
+        $this->table($rows);
     }
 
     public function viewSummary()
@@ -144,10 +155,34 @@ class BudgetTracker extends BaseCommand
             return null;
         }
 
-        $this->table($this->transactions);
-        $id = $this->ask("Enter the transaction ID to {$mode}:");
+        // Build a table-friendly array of transactions
+        $rows = [];
+        foreach ($this->transactions as $i => $t) {
+            $rows[] = [
+                '#' => $i + 1,
+                'Description' => $t['description'],
+                'Amount (£)' => ($t['type'] === 'expense' ? '-' : '+') . number_format($t['amount'], 2),
+                'Type' => ucfirst($t['type']),
+                'ID' => $t['id'],
+            ];
+        }
 
-        $index = array_search($id, array_column($this->transactions, 'id'), true);
+        $this->table($rows);
+
+        $input = trim($this->ask("Enter the number or transaction ID to {$mode}:"));
+
+        // If user entered a number, treat it as a row selection
+        if (is_numeric($input)) {
+            $index = (int) $input - 1;
+            if (!isset($this->transactions[$index])) {
+                $this->error("Invalid selection number.");
+                return null;
+            }
+            return $index;
+        }
+
+        // Otherwise, treat input as an ID
+        $index = array_search($input, array_column($this->transactions, 'id'), true);
 
         if ($index === false || !isset($this->transactions[$index])) {
             $this->error("Transaction not found.");
@@ -156,6 +191,7 @@ class BudgetTracker extends BaseCommand
 
         return $index;
     }
+
 
     protected function save()
     {
